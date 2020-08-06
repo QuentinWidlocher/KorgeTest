@@ -2,9 +2,9 @@ import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.component.Component
 import com.soywiz.korge.view.*
 
-abstract class GameObject(override val view: Stage): Component {
+abstract class GameObject<T : RectBase>(override val view: Stage): Component {
 
-    var sprite = RectBase()
+    var sprite: T = RectBase() as T
 
     open val touchScreenVerticalEdge: Boolean
         get() = touchScreenTopEdge || touchScreenBottomEdge
