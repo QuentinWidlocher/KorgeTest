@@ -57,11 +57,7 @@ class Ristar(parent: Stage): MovableObject<Sprite>(parent) {
     private fun draw() {
 
         if (isGrounded) {
-            if (velocity.x > 0) {
-                sprite.scaleX = abs(sprite.scaleX)
-                animate(Walking, true)
-            } else if (velocity.x < 0) {
-                sprite.scaleX = -abs(sprite.scaleX)
+            if (abs(velocity.x) > 0) {
                 animate(Walking, true)
             } else {
                 animate(Idle, true)
@@ -72,6 +68,12 @@ class Ristar(parent: Stage): MovableObject<Sprite>(parent) {
             } else {
                 animate(Falling)
             }
+        }
+
+        if (velocity.x > 0) {
+            sprite.scaleX = abs(sprite.scaleX)
+        } else if (velocity.x < 0) {
+            sprite.scaleX = -abs(sprite.scaleX)
         }
     }
 
