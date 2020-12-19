@@ -34,7 +34,7 @@ abstract class GameObject<T : RectBase>(override val view: Stage): Component {
         init()
 
         sprite.addProp("parent", this)
-        sprite.onCollision(callback = {privateCollision(it)})
+        sprite.onCollision(callback = {privateCollision(it)}, filter = { it != view })
         view.addChild(sprite)
         view.onNextFrame { sprite.addUpdater{ privateUpdate(it) } }
     }
