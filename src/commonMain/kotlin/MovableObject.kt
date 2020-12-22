@@ -1,14 +1,10 @@
 import com.soywiz.klock.TimeSpan
-import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.RectBase
 import com.soywiz.korge.view.Stage
 import com.soywiz.korma.geom.Point
 
-abstract class MovableObject<T:RectBase>(view: Stage): GameObject<T>(view) {
-    var speed = 0.0
-
+abstract class MovableObject(view: Stage) : GameObject(view) {
     private var oldPos = newPos
-    private val newPos get() = Point(sprite.globalX, sprite.globalY)
+    private val newPos get() = Point(bounds.globalX, bounds.globalY)
 
     val velocity get() = newPos - oldPos
 

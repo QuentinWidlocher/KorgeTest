@@ -1,18 +1,32 @@
-import com.soywiz.klock.hr.timeSpan
-import com.soywiz.klock.seconds
 import com.soywiz.korge.*
-import com.soywiz.korge.box2d.BoxShape
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
-import com.soywiz.korim.format.readBitmap
-import com.soywiz.korio.file.std.resourcesVfs
 
-suspend fun main() = Korge(width = 512, height = 512) {
+suspend fun main() = Korge {
 	solidRect(this.width, 32.0, Colors.WHITE) {
 		xy(0.0, this@Korge.height - height)
 	}
 
-	val r = Ristar(this).apply {
-		sprite.xy(width / 2, height / 2)
+	solidRect(64.0, 32.0, Colors.WHITE) {
+		xy(0.0, this@Korge.height - 128.0)
 	}
+
+	solidRect(64.0, 32.0, Colors.WHITE) {
+		xy(128.0, this@Korge.height - 200.0)
+	}
+
+	solidRect(64.0, 32.0, Colors.WHITE) {
+		xy(256.0, this@Korge.height - 256.0)
+	}
+
+	solidRect(32.0, 128.0, Colors.WHITE) {
+		xy(256.0, this@Korge.height - height)
+	}
+
+	solidRect(32.0, 128.0, Colors.WHITE) {
+		xy(350.0, this@Korge.height - height - 73.0)
+	}
+
+	ristar(40.0, height / 2)
+
 }

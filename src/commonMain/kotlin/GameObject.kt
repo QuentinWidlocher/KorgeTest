@@ -1,54 +1,109 @@
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.component.Component
 import com.soywiz.korge.view.*
+import com.soywiz.korio.lang.Cancellable
 
-abstract class GameObject<T : RectBase>(override val view: Stage): Component {
+abstract class GameObject(override val view: Stage) : Component {
 
-    var sprite: T = RectBase() as T
-
-    open val touchScreenVerticalEdge: Boolean
-        get() = touchScreenTopEdge || touchScreenBottomEdge
-
-    open val touchScreenTopEdge: Boolean
-        get() = sprite.globalBounds.top <= view.globalBounds.top
-
-    open val touchScreenBottomEdge: Boolean
-        get() = sprite.globalBounds.bottom >= view.globalBounds.bottom
-
-    open val touchScreenHorizontalEdge: Boolean
-        get() = touchScreenRightEdge || touchScreenLeftEdge
-
-    open val touchScreenRightEdge: Boolean
-        get() = sprite.globalBounds.right >= view.globalBounds.right
-
-    open val touchScreenLeftEdge: Boolean
-        get() = sprite.globalBounds.left <= view.globalBounds.left
+    var sprite = Sprite()
+    val bounds = FixedSizeContainer()
 
     init {
         privateInit()
     }
 
-    open fun init() {}
+    open fun init() = Unit
 
     private fun privateInit() {
+
+        var debugSquare: SolidRect? = null
+
+        bounds.addProp("GameObject", this)
+        sprite.addProp("GameObject", this)
+        bounds.onCollision(
+            callback = { privateCollisionEnter(it) },
+            filter = { it != view && it != debugSquare && it != sprite })
+        bounds.onCollisionExit(
+            callback = { privateCollisionExit(it) },
+            filter = { it != view && it != debugSquare && it != sprite })
+        view.onNextFrame { view.addUpdater { privateUpdate(it) } }
+
         init()
 
-        sprite.addProp("parent", this)
-        sprite.onCollision(callback = {privateCollision(it)}, filter = { it != view })
+//        debugSquare = view.solidRect(bounds.width, bounds.height, Colors.RED).apply {
+//            addUpdater {
+//                x = this@GameObject.bounds.x
+//                y = this@GameObject.bounds.y
+//            }
+//        }
+
+        view.addChild(bounds)
         view.addChild(sprite)
-        view.onNextFrame { sprite.addUpdater{ privateUpdate(it) } }
     }
 
-    open fun update(dt: TimeSpan) {}
+    open fun update(dt: TimeSpan) = Unit
 
     private fun privateUpdate(dt: TimeSpan) {
+        sprite.apply {
+            x = bounds.x + (bounds.width / 2)
+            y = bounds.y + (bounds.height / 2)
+        }
         update(dt)
     }
 
-    open fun collision(otherSprite: View, other: Any?) {}
+    open fun onCollisionEnter(other: View, otherGameObject: GameObject?) = Unit
 
-    private fun privateCollision(otherSprite: View) {
-        val other = otherSprite.props["parent"]
-        collision(otherSprite, other)
+    private fun privateCollisionEnter(other: View) {
+        val otherGameObject: GameObject? = other.props["GameObject"] as GameObject?
+        onCollisionEnter(other, otherGameObject)
+    }
+
+    open fun onCollisionExit(other: View, otherGameObject: GameObject?) = Unit
+
+    private fun privateCollisionExit(other: View) {
+        val otherGameObject: GameObject? = other.props["GameObject"] as GameObject?
+        onCollisionExit(other, otherGameObject)
     }
 }
+
+fun View.onCollisionExit(
+    filter: (View) -> Boolean = { true },
+    root: View? = null,
+    kind: CollisionKind = CollisionKind.GLOBAL_RECT,
+    callback: View.(View) -> Unit
+): Cancellable {
+    val collisionState = mutableMapOf<View, Boolean>()
+    return addUpdater {
+        (root ?: this.root).foreachDescendant {
+            if (this != it && filter(it)) {
+                if (this.collidesWith(it, kind)) {
+                    collisionState[it] = true
+                } else if (collisionState[it] == true) {
+                    callback(this, it)
+                    collisionState[it] = false
+                }
+            }
+        }
+    }
+}
+
+var View.bottom
+    get() = this.y + this.height
+    set(b) {
+        this.y = b - this.height
+    }
+var View.top
+    get() = this.y
+    set(y) {
+        this.y = y
+    }
+var View.right
+    get() = this.x + this.width
+    set(r) {
+        this.x = r - this.width
+    }
+var View.left
+    get() = this.x
+    set(x) {
+        this.x = x
+    }
