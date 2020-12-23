@@ -2,10 +2,10 @@ import RistarAnimation.*
 import com.soywiz.klock.TimeSpan
 import com.soywiz.klock.milliseconds
 import com.soywiz.korev.Key
-import com.soywiz.korge.view.SpriteAnimation
-import com.soywiz.korge.view.Stage
-import com.soywiz.korge.view.View
-import com.soywiz.korge.view.xy
+import com.soywiz.korge.scene.SceneContainer
+import com.soywiz.korge.view.*
+import com.soywiz.korge.view.camera.CameraContainer
+import com.soywiz.korge.view.camera.CameraContainerOld
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.async.async
 import com.soywiz.korio.async.launch

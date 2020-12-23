@@ -4,7 +4,6 @@ apply<KorgeGradlePlugin>()
 
 korge {
 	id = "com.lazard.Lazard"
-	supportExperimental3d()
 	supportBox2d()
 }
 
@@ -18,6 +17,6 @@ buildscript {
 		jcenter()
 	}
 	dependencies {
-		classpath("com.soywiz.korlibs.korge.plugins:korge-gradle-plugin:1.15.0.0")
+		classpath("com.soywiz.korlibs.korge.plugins:korge-gradle-plugin:2.0.0.1")
 	}
 }

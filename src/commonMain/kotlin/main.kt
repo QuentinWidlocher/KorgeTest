@@ -1,32 +1,17 @@
 import com.soywiz.korge.*
-import com.soywiz.korge.view.*
-import com.soywiz.korim.color.Colors
+import com.soywiz.korge.view.ktree.KTreeRoot
+import com.soywiz.korge.view.ktree.KTreeSerializer
+import com.soywiz.korge.view.ktree.readKTree
+import com.soywiz.korio.file.std.resourcesVfs
 
-suspend fun main() = Korge {
-	solidRect(this.width, 32.0, Colors.WHITE) {
-		xy(0.0, this@Korge.height - height)
-	}
+suspend fun main() = Korge(width = 512, height = 512) {
 
-	solidRect(64.0, 32.0, Colors.WHITE) {
-		xy(0.0, this@Korge.height - 128.0)
-	}
+	val file = resourcesVfs["TestLevel.ktree"]
+	addChild(file.readKTree(views))
 
-	solidRect(64.0, 32.0, Colors.WHITE) {
-		xy(128.0, this@Korge.height - 200.0)
-	}
+	ristar(32.0, 464.0)
 
-	solidRect(64.0, 32.0, Colors.WHITE) {
-		xy(256.0, this@Korge.height - 256.0)
-	}
-
-	solidRect(32.0, 128.0, Colors.WHITE) {
-		xy(256.0, this@Korge.height - height)
-	}
-
-	solidRect(32.0, 128.0, Colors.WHITE) {
-		xy(350.0, this@Korge.height - height - 73.0)
-	}
-
-	ristar(40.0, height / 2)
-
+	// Idk why but removing the CameraContainer prevent unwanted collisions
+	// Because the type shifts to Container and we cannot filter it later
+	removeChild(firstChild)
 }
